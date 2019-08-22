@@ -1,0 +1,9 @@
+/* CSS for EolConditionalXBlock */
+
+.eolconditional_block .count {
+    font-weight: bold;
+}
+
+.eolconditional_block p {
+    cursor: pointer;
+}
