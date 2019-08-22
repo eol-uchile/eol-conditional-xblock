@@ -1,0 +1,35 @@
+{% load i18n %}
+<div class="wrapper-comp-settings is-active editor-with-buttons" id="settings-tab">
+  <ul class="list-input settings-list">
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="trigger_component">{% trans field_trigger_component.display_name %}</label>
+        <input class="input setting-input" name="trigger_component" id="trigger_component" value="{{xblock.trigger_component}}" type="text" />
+      </div>
+      <span class="tip setting-help">{% trans field_trigger_component.help %}</span>
+    </li>
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="conditional_component">{% trans field_conditional_component.display_name %}</label>
+        <input class="input setting-input" name="conditional_component" id="conditional_component" value="{{xblock.conditional_component}}" type="text" />
+      </div>
+      <span class="tip setting-help">{% trans field_conditional_component.help %}</span>
+    </li>
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="id">{% trans "ID de la Ubicación del componente" %}</label>
+        <span class="setting-text">{{ xblock.location }}</span>
+      </div>
+    </li>
+  </ul>
+  <div class="xblock-actions">
+    <ul>
+      <li class="action-item">
+        <a href="#" class="button action-primary save-button">{% trans "Save" %}</a>
+      </li>
+      <li class="action-item">
+        <a href="#" class="button cancel-button">{% trans "Cancel" %}</a>
+      </li>
+    </ul>
+  </div>
+</div>

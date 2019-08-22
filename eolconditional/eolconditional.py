@@ -1,23 +1,51 @@
-"""TO-DO: Write a description of what this XBlock is."""
-
+import json
 import pkg_resources
+
+from django.template import Context, Template
+
+from webob import Response
+
 from xblock.core import XBlock
-from xblock.fields import Integer, Scope
+from xblock.fields import Integer, String, Boolean, Scope
 from xblock.fragment import Fragment
+
+# Make '_' a no-op so we can scrape strings
+_ = lambda text: text
 
 
 class EolConditionalXBlock(XBlock):
-    """
-    TO-DO: document what your XBlock does.
-    """
 
-    # Fields are defined on the class.  You can access them in your code as
-    # self.<fieldname>.
+    display_name = String(
+        display_name=_("Display Name"),
+        help=_("Display name for this module"),
+        default="Eol Conditional XBlock",
+        scope=Scope.settings,
+    )
 
-    # TO-DO: delete count, and define your own fields.
-    count = Integer(
-        default=0, scope=Scope.user_state,
-        help="A simple counter, to show something happening",
+    icon_class = String(
+        default="other",
+        scope=Scope.settings,
+    )
+
+    trigger_component = String(
+        display_name = _("Id Componente Gatillante"),
+        help = _("Indica el id del componente (problema) gatillante. Recuerda que son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
+        default = "trigger_id",
+        scope = Scope.settings,
+    )
+
+    conditional_component = String(
+        display_name = _("Id Componente Condicional"),
+        help = _("Indica el id del componente condicional. Recuerda que son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
+        default = "conditional_id",
+        scope = Scope.settings,
+    )
+
+    is_visible = Boolean(
+        display_name=_("Visibilidad"),
+        help=_("Visibilidad del Componente Condicional"),
+        default=False,
+        scope=Scope.settings
     )
 
     def resource_string(self, path):
@@ -25,46 +53,49 @@ class EolConditionalXBlock(XBlock):
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
 
-    # TO-DO: change this view to display your data your own way.
     def student_view(self, context=None):
-        """
-        The primary view of the EolConditionalXBlock, shown to students
-        when viewing courses.
-        """
-        html = self.resource_string("static/html/eolconditional.html")
-        frag = Fragment(html.format(self=self))
+        context_html = self.get_context()
+        template = self.render_template('static/html/eolconditional.html', context_html)
+        frag = Fragment(template)
         frag.add_css(self.resource_string("static/css/eolconditional.css"))
         frag.add_javascript(self.resource_string("static/js/src/eolconditional.js"))
         frag.initialize_js('EolConditionalXBlock')
         return frag
 
-    # TO-DO: change this handler to perform your own actions.  You may need more
-    # than one handler, or you may not need any handlers at all.
-    @XBlock.json_handler
-    def increment_count(self, data, suffix=''):
-        """
-        An example handler, which increments the data.
-        """
-        # Just to show data coming in...
-        assert data['hello'] == 'world'
+    def studio_view(self, context=None):
+        context_html = self.get_context()
+        template = self.render_template('static/html/studio.html', context_html)
+        frag = Fragment(template)
+        frag.add_css(self.resource_string("static/css/eolconditional.css"))
+        frag.add_javascript(self.resource_string("static/js/src/studio.js"))
+        frag.initialize_js('EolConditionalStudioXBlock')
+        return frag
 
-        self.count += 1
-        return {"count": self.count}
+    @XBlock.handler
+    def studio_submit(self, request, suffix=''):
+        self.trigger_component = request.params['trigger_component']
+        self.conditional_component = request.params['conditional_component']
+        return Response(json.dumps({'result': 'success'}), content_type='application/json')
 
-    # TO-DO: change this to create the scenarios you'd like to see in the
-    # workbench while developing your XBlock.
+    def get_context(self):
+        return {
+            'field_trigger_component': self.fields['trigger_component'],
+            'field_conditional_component': self.fields['conditional_component'],
+            'field_is_visible': self.fields['is_visible'],
+            'xblock': self
+        }
+
+    def render_template(self, template_path, context):
+        template_str = self.resource_string(template_path)
+        template = Template(template_str)
+        return template.render(Context(context))
+
+
     @staticmethod
     def workbench_scenarios():
         """A canned scenario for display in the workbench."""
         return [
             ("EolConditionalXBlock",
              """<eolconditional/>
-             """),
-            ("Multiple EolConditionalXBlock",
-             """<vertical_demo>
-                <eolconditional/>
-                <eolconditional/>
-                <eolconditional/>
-                </vertical_demo>
              """),
         ]
