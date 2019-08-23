@@ -41,13 +41,6 @@ class EolConditionalXBlock(XBlock):
         scope = Scope.settings,
     )
 
-    is_visible = Boolean(
-        display_name=_("Visibilidad"),
-        help=_("Visibilidad del Componente Condicional"),
-        default=False,
-        scope=Scope.settings
-    )
-
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
@@ -61,8 +54,7 @@ class EolConditionalXBlock(XBlock):
         frag.add_javascript(self.resource_string("static/js/src/eolconditional.js"))
         settings = {
             'trigger_component'     : self.trigger_component,
-            'conditional_component' : self.conditional_component,
-            'is_visible'            : self.is_visible
+            'conditional_component' : self.conditional_component
         }
         frag.initialize_js('EolConditionalXBlock', json_args=settings)
         return frag
@@ -86,7 +78,6 @@ class EolConditionalXBlock(XBlock):
         return {
             'field_trigger_component': self.fields['trigger_component'],
             'field_conditional_component': self.fields['conditional_component'],
-            'field_is_visible': self.fields['is_visible'],
             'xblock': self
         }
 
