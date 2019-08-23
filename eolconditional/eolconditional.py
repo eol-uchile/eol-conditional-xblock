@@ -59,7 +59,12 @@ class EolConditionalXBlock(XBlock):
         frag = Fragment(template)
         frag.add_css(self.resource_string("static/css/eolconditional.css"))
         frag.add_javascript(self.resource_string("static/js/src/eolconditional.js"))
-        frag.initialize_js('EolConditionalXBlock')
+        settings = {
+            'trigger_component'     : self.trigger_component,
+            'conditional_component' : self.conditional_component,
+            'is_visible'            : self.is_visible
+        }
+        frag.initialize_js('EolConditionalXBlock', json_args=settings)
         return frag
 
     def studio_view(self, context=None):
