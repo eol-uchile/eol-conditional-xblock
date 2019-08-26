@@ -30,16 +30,18 @@ class EolConditionalXBlock(XBlock):
     trigger_component = String(
         display_name = _("Id Componente Gatillante"),
         help = _("Indica el id del componente (problema) gatillante. Recuerda que son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
-        default = "trigger_id",
+        default = "None",
         scope = Scope.settings,
     )
 
     conditional_component = String(
         display_name = _("Id Componente Condicional"),
         help = _("Indica el id del componente condicional. Recuerda que son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
-        default = "conditional_id",
+        default = "None",
         scope = Scope.settings,
     )
+
+    has_author_view = True
 
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""
@@ -54,7 +56,8 @@ class EolConditionalXBlock(XBlock):
         frag.add_javascript(self.resource_string("static/js/src/eolconditional.js"))
         settings = {
             'trigger_component'     : self.trigger_component,
-            'conditional_component' : self.conditional_component
+            'conditional_component' : self.conditional_component,
+            'location'              : self.location
         }
         frag.initialize_js('EolConditionalXBlock', json_args=settings)
         return frag
@@ -66,6 +69,13 @@ class EolConditionalXBlock(XBlock):
         frag.add_css(self.resource_string("static/css/eolconditional.css"))
         frag.add_javascript(self.resource_string("static/js/src/studio.js"))
         frag.initialize_js('EolConditionalStudioXBlock')
+        return frag
+    
+    def author_view(self, context=None):
+        context_html = self.get_context()
+        template = self.render_template('static/html/author_view.html', context_html)
+        frag = Fragment(template)
+        frag.add_css(self.resource_string("static/css/eolconditional.css"))
         return frag
 
     @XBlock.handler

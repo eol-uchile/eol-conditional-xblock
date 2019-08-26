@@ -2,6 +2,7 @@ function EolConditionalXBlock(runtime, element, settings) {
 
 
     $(function ($) {
+        $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
         set_visibility();
         var submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
         var submit_button_text = submit_button.find('span:first').text(); // getting 'original state' of submit button
@@ -21,7 +22,7 @@ function EolConditionalXBlock(runtime, element, settings) {
         }
 
         function set_visibility() {
-            let conditional_component = $('.vert').filter('[data-id*="' + settings.conditional_component + '"]')
+            let conditional_component = $('.vert').filter('[data-id*="' + settings.conditional_component + '"]');
             if(is_visible(settings.trigger_component)) {
                 conditional_component.show()
             } else {

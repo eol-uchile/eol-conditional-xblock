@@ -1,9 +1,25 @@
 /* CSS for EolConditionalXBlock */
 
-.eolconditional_block .count {
+.eolconditional_block .alert {
+    position: relative;
+    font-style: italic;
+    padding: .75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    margin-bottom: 1em;
+}
+
+.eolconditional_block .alert-info {
+    background-color: #d9edf7;
+    border-color: #bcdff1;
+    color: #31708f !important;
+}
+
+.eolconditional_block .block_id {
     font-weight: bold;
 }
 
 .eolconditional_block p {
-    cursor: pointer;
+    font-style: italic;
+    text-align: justify;
 }
