@@ -11,7 +11,7 @@
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
         <label class="label setting-label" for="conditional_component">{% trans field_conditional_component.display_name %}</label>
-        <input class="input setting-input" name="conditional_component" id="conditional_component" value="{{xblock.conditional_component}}" type="text" />
+        <textarea class="input setting-input" name="conditional_component" id="conditional_component" type="text" rows="10" cols="70">{{xblock.conditional_component}}</textarea>
       </div>
       <span class="tip setting-help">{% trans field_conditional_component.help %}</span>
     </li>

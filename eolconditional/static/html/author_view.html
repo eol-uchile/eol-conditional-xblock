@@ -3,6 +3,10 @@
     <div class=" alert alert-info">
         <p>{% trans 'Las acciones de este XBlock se verán reflejadas en el LMS.' %}</p>
     </div>
-    <p>{% trans 'Este bloque oculta el/los componentes:'%} <span class="block_id">{{ xblock.conditional_component }}</span>.</p>
-    <p>{% trans 'Cuando el problema ' %} <span class="block_id">{{ xblock.trigger_component }}</span> {% trans 'esté correcto o la cantidad máxima de intentos haya sido alcanzada, se mostrarán los bloques ocultos.' %}</p>
+    <p>{% trans 'Cuando el problema ' %} <span class="block_id">{{ xblock.trigger_component }}</span> {% trans 'esté correcto o la cantidad máxima de intentos haya sido alcanzada, se mostrarán los sigueintes bloques ocultos:' %}</p>
+    <ul>
+            {% for component in conditional_component_list %}
+            <li class="block_id">- {{ component }}</li>
+            {% endfor %}
+        </ul>
 </div>

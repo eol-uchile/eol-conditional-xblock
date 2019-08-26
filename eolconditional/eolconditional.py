@@ -1,4 +1,5 @@
 import json
+import re
 import pkg_resources
 
 from django.template import Context, Template
@@ -28,15 +29,15 @@ class EolConditionalXBlock(XBlock):
     )
 
     trigger_component = String(
-        display_name = _("Id Componente Gatillante"),
-        help = _("Indica el id del componente (problema) gatillante. Recuerda que son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
+        display_name = _("ID Componente Gatillante"),
+        help = _("Indica el ID del componente (problema) gatillante. Recuerda que para el ID son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
         default = "None",
         scope = Scope.settings,
     )
 
     conditional_component = String(
-        display_name = _("Id Componente Condicional"),
-        help = _("Indica el id del componente condicional. Recuerda que son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
+        display_name = _("ID Componentes Condicional"),
+        help = _("Indica los ID de los componentes condicionales, separados por 'comas' o saltos de linea. Recuerda que para el ID son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
         default = "None",
         scope = Scope.settings,
     )
@@ -55,9 +56,9 @@ class EolConditionalXBlock(XBlock):
         frag.add_css(self.resource_string("static/css/eolconditional.css"))
         frag.add_javascript(self.resource_string("static/js/src/eolconditional.js"))
         settings = {
-            'trigger_component'     : self.trigger_component,
-            'conditional_component' : self.conditional_component,
-            'location'              : self.location
+            'trigger_component'         : self.trigger_component,
+            'conditional_component_list': self.get_conditional_component_list(),
+            'location'                  : self.location
         }
         frag.initialize_js('EolConditionalXBlock', json_args=settings)
         return frag
@@ -88,6 +89,7 @@ class EolConditionalXBlock(XBlock):
         return {
             'field_trigger_component': self.fields['trigger_component'],
             'field_conditional_component': self.fields['conditional_component'],
+            'conditional_component_list': self.get_conditional_component_list(),
             'xblock': self
         }
 
@@ -95,6 +97,10 @@ class EolConditionalXBlock(XBlock):
         template_str = self.resource_string(template_path)
         template = Template(template_str)
         return template.render(Context(context))
+
+    def get_conditional_component_list(self):    
+        conditional_component_list = re.split('\s*,*|\s*,\s*', self.conditional_component)
+        return filter(None, conditional_component_list) # filter empty elements
 
 
     @staticmethod

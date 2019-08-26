@@ -22,11 +22,16 @@ function EolConditionalXBlock(runtime, element, settings) {
         }
 
         function set_visibility() {
-            let conditional_component = $('.vert').filter('[data-id*="' + settings.conditional_component + '"]');
             if(is_visible(settings.trigger_component)) {
-                conditional_component.show()
+                for (conditional_component of settings.conditional_component_list) {
+                    let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
+                    c.show();
+                }
             } else {
-                conditional_component.hide();
+                for (conditional_component of settings.conditional_component_list) {
+                    let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
+                    c.hide();
+                }
             }
         }
 
@@ -35,9 +40,9 @@ function EolConditionalXBlock(runtime, element, settings) {
             return check_disabled(component) || check_status(component);
         }
 
-        // Check if submit button is disabled (finished attempting the problem)
+        // Check if submit button is disabled (finished attempting the problem) and if the problem has been answered
         function check_disabled(component) {
-            return $('.submit').filter('[aria-describedby*="' + component + '"]').is(":disabled");
+            return $('.submit').filter('[aria-describedby*="' + component + '"]').is(":disabled") && !$('.status').filter('[id*="status_' + component + '"]').hasClass('unanswered');
         }
 
         // Check if answer is correct
