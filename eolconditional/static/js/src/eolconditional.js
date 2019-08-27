@@ -14,17 +14,21 @@ function EolConditionalXBlock(runtime, element, settings) {
                 let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]').find('span:first').text();
                 if(new_submit_button_text == submit_button_text) {
                     clearInterval(refreshIntervalId);
-                    set_visibility();
+                    set_visibility(scroll=true);
                     submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
                     submit_button.click(query_await);
                 };
             }, 500);
         }
 
-        function set_visibility() {
+        function set_visibility(scroll=false) {
             if(is_visible(settings.trigger_component)) {
-                for (conditional_component of settings.conditional_component_list) {
+                for (const [index, conditional_component] of settings.conditional_component_list.entries()) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
+                    // Scroll page to the first conditional_component on submit
+                    if(index == 0 && scroll) {
+                        $("html, body").animate({ scrollTop: c.offset().top }, 1000);
+                    }
                     c.show();
                 }
             } else {
