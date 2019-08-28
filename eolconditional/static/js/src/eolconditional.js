@@ -1,7 +1,7 @@
 function EolConditionalXBlock(runtime, element, settings) {
 
 
-    $(function ($) {
+    $(function($) {
         $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
         set_visibility();
         var submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
@@ -10,26 +10,26 @@ function EolConditionalXBlock(runtime, element, settings) {
 
         function query_await() {
             //TODO: improve this code
-            var refreshIntervalId = setInterval(function(){
+            var refreshIntervalId = setInterval(function() {
                 let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]').find('span:first').text();
-                if(new_submit_button_text == submit_button_text) {
+                if (new_submit_button_text == submit_button_text) {
                     clearInterval(refreshIntervalId);
-                    set_visibility(scroll=true);
+                    set_visibility(scroll = true);
                     submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
                     submit_button.click(query_await);
                 };
             }, 500);
         }
 
-        function set_visibility(scroll=false) {
-            if(is_visible(settings.trigger_component)) {
+        function set_visibility(scroll = false) {
+            if (is_visible(settings.trigger_component)) {
                 for (const [index, conditional_component] of settings.conditional_component_list.entries()) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
+                    c.show();
                     // Scroll page to the first conditional_component on submit
-                    if(index == 0 && scroll) {
+                    if (index == 0 && scroll) {
                         $("html, body").animate({ scrollTop: c.offset().top }, 1000);
                     }
-                    c.show();
                 }
             } else {
                 for (conditional_component of settings.conditional_component_list) {
@@ -54,7 +54,7 @@ function EolConditionalXBlock(runtime, element, settings) {
             let is_correct = true;
             let elements = $('.status').filter('[id*="status_' + component + '"]');
             // Sometimes are more than one status element
-            for(let i = 0; i < elements.length; i++) {
+            for (let i = 0; i < elements.length; i++) {
                 element = elements.eq(i);
                 if (element.hasClass('incorrect') || element.hasClass('unanswered')) {
                     is_correct = false;
@@ -63,6 +63,6 @@ function EolConditionalXBlock(runtime, element, settings) {
             }
             return is_correct;
         }
-        
+
     });
 }
