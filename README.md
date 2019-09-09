@@ -1,10 +1,3 @@
-<style>
-img[src$="center"] {
-  display:block;
-  margin: 0 auto;
-}
-</style>
-
 # EOL Conditional XBlock
 XBlock to show/hide one or more conditional component by a trigger component in the Open edX LMS. Editable within Open edx Studio.
 
