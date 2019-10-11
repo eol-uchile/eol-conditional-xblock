@@ -2,6 +2,7 @@ function EolConditionalXBlock(runtime, element, settings) {
 
 
     $(function($) {
+        var handlerUrl = runtime.handlerUrl(element, 'publish_completion');
         $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
         set_visibility();
         var submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
@@ -23,6 +24,18 @@ function EolConditionalXBlock(runtime, element, settings) {
 
         function set_visibility(scroll = false) {
             if (is_visible(settings.trigger_component)) {
+                $.ajax({
+                    type: "POST",
+                    url: handlerUrl,
+                    data: JSON.stringify({
+                        completion: 1.0,
+                    }),
+                }).then(
+                    (response) => {
+                        //console.log(response);
+                    },
+                );
+
                 for (const [index, conditional_component] of settings.conditional_component_list.entries()) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
                     c.show();
