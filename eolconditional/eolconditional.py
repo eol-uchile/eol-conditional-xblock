@@ -84,7 +84,7 @@ class EolConditionalXBlock(XBlock):
     def studio_submit(self, request, suffix=''):
         self.trigger_component = request.params['trigger_component']
         self.conditional_component = request.params['conditional_component']
-        return Response(json.dumps({'result': 'success'}), content_type='application/json')
+        return Response({'result': 'success'}, content_type='application/json')
 
     def get_context(self):
         return {
@@ -99,9 +99,9 @@ class EolConditionalXBlock(XBlock):
         template = Template(template_str)
         return template.render(Context(context))
 
-    def get_conditional_component_list(self):    
+    def get_conditional_component_list(self):
         conditional_component_list = re.split('\s*,*|\s*,\s*', self.conditional_component)
-        return filter(None, conditional_component_list) # filter empty elements
+        return list(filter(None, conditional_component_list)) # filter empty elements
     
     @XBlock.json_handler
     def publish_completion(self, data, dispatch):  # pylint: disable=unused-argument
