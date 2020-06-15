@@ -1,0 +1,24 @@
+version: "3"
+services:
+
+  ############# External services
+
+  memcached:
+    image: memcached:1.4.38
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:3.6
+    # Use WiredTiger in all environments, just like at edx.org
+    command: mongod --smallfiles --nojournal --storageEngine wiredTiger
+    restart: unless-stopped
+
+  lms:
+    image: eoluchile/edx-platform:testing-juniper
+    volumes:
+      - ../:/openedx/requirements/eolconditional
+    depends_on:
+      - memcached
+      - mongodb
+
+
