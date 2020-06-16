@@ -16,11 +16,22 @@ from student.roles import CourseStaffRole
 from .eolconditional import EolConditionalXBlock
 
 from six import text_type
+import json
 
 import logging
 logger = logging.getLogger(__name__)
 
 XBLOCK_RUNTIME_USER_ID = 99
+
+class TestRequest(object):
+    # pylint: disable=too-few-public-methods
+    """
+    Module helper for @json_handler
+    """
+    method = None
+    body = None
+    success = None
+    params = None
 
 class TestEolConditionalXBlock(UrlResetMixin, ModuleStoreTestCase):
 
@@ -115,3 +126,20 @@ class TestEolConditionalXBlock(UrlResetMixin, ModuleStoreTestCase):
         student_view = self.xblock.student_view()
         student_view_html = student_view.content
         self.assertIn('Eol Conditional XBlock', student_view_html)
+
+    def test_studio_submit(self):
+        """
+            Test studio submit @XBlock.handler (CMS)
+        """
+        request = TestRequest()
+        request.method = 'POST'
+        post_data = {
+            'trigger_component': 'trigger_component',
+            'conditional_component': 'conditional_component'
+        }
+        data = json.dumps(post_data)
+        request.body = data
+        request.params = post_data
+        response = self.xblock.studio_submit(request)
+        self.assertEqual(self.xblock.trigger_component, 'trigger_component')
+        self.assertEqual(self.xblock.conditional_component, 'conditional_component')
