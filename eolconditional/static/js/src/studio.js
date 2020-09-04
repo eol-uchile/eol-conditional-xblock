@@ -36,31 +36,26 @@ function EolConditionalStudioXBlock(runtime, element) {
     $(element).find('.refill-button').bind('click', function(e) {
       var id = $(this).attr('id-component');
       id = id.substring(id.lastIndexOf('@')+1,id.length);
-      var empece = false;
-      var termine = false;
-      var resp = "";
-      console.log(id);
+      var start = false;
+      var ans = "";
       $('li.studio-xblock-wrapper').each(function(){
           dl = $(this).attr('data-locator');
-          idbloque = dl.substring(dl.lastIndexOf('@')+1,dl.length);
-          console.log(idbloque);
+          idblock = dl.substring(dl.lastIndexOf('@')+1,dl.length);
   
-          if(empece && dl.indexOf('eolconditional') > 0){
-  
+          if(start && dl.indexOf('eolconditional') > 0){
               return false;
           }
   
-          if(empece){
-              resp += idbloque+"\n";
+          if(start){
+              ans += idblock+"\n";
           }
   
-          if(idbloque == id){
-              console.log("lo encontre");
-              empece = true;
+          if(idblock == id){
+              start = true;
           }
       });
   
-      $('div[data-usage-id*="'+id+'"] textarea.input').val(resp);
+      $('div[data-usage-id*="'+id+'"] textarea.input').val(ans);
       e.preventDefault();
       
     });
