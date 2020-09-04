@@ -32,38 +32,6 @@ function EolConditionalStudioXBlock(runtime, element) {
       runtime.notify('cancel', {});
       e.preventDefault();
     });
-
-    $(element).find('.refill-button').bind('click', function(e) {
-      var id = $(this).attr('id-component');
-      id = id.substring(id.lastIndexOf('@')+1,id.length);
-      var empece = false;
-      var termine = false;
-      var resp = "";
-      console.log(id);
-      $('li.studio-xblock-wrapper').each(function(){
-          dl = $(this).attr('data-locator');
-          idbloque = dl.substring(dl.lastIndexOf('@')+1,dl.length);
-          console.log(idbloque);
-  
-          if(empece && dl.indexOf('eolconditional') > 0){
-  
-              return false;
-          }
-  
-          if(empece){
-              resp += idbloque+"\n";
-          }
-  
-          if(idbloque == id){
-              console.log("lo encontre");
-              empece = true;
-          }
-      });
-  
-      $('div[data-usage-id*="'+id+'"] textarea.input').val(resp);
-      e.preventDefault();
-      
-    });
   
   }
   
