@@ -14,6 +14,10 @@
         <textarea class="input setting-input" name="conditional_component" id="conditional_component" type="text" rows="10" cols="70">{{xblock.conditional_component}}</textarea>
       </div>
       <span class="tip setting-help">{% trans field_conditional_component.help %}</span>
+      <div class="refill-div">	
+        <a href="#" class="button refill-button" id-component="{{ xblock.location }}">Rellenar</a>	
+        <span class="tip setting-help">(Hacer click rellenara el bloque con todos los bloques hasta el sgte condicional)</span>	
+      </div>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
