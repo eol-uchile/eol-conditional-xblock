@@ -32,6 +32,33 @@ function EolConditionalStudioXBlock(runtime, element) {
       runtime.notify('cancel', {});
       e.preventDefault();
     });
+
+    $(element).find('.refill-button').bind('click', function(e) {
+      var id = $(this).attr('id-component');
+      id = id.substring(id.lastIndexOf('@')+1,id.length);
+      var start = false;
+      var ans = "";
+      $('li.studio-xblock-wrapper').each(function(){
+          dl = $(this).attr('data-locator');
+          idblock = dl.substring(dl.lastIndexOf('@')+1,dl.length);
+  
+          if(start && dl.indexOf('eolconditional') > 0){
+              return false;
+          }
+  
+          if(start){
+              ans += idblock+"\n";
+          }
+  
+          if(idblock == id){
+              start = true;
+          }
+      });
+  
+      $('div[data-usage-id*="'+id+'"] textarea.input').val(ans);
+      e.preventDefault();
+      
+    });
   
   }
   
