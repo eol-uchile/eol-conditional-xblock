@@ -7,18 +7,35 @@ function EolConditionalXBlock(runtime, element, settings) {
         set_visibility();
         var submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
         var submit_button_text = submit_button.find('span:first').text(); // getting 'original state' of submit button
+        var jsdng = false;
+        if($('.vert').filter('[data-id*="' + settings.trigger_component + '"]').find('.jsinput[data-getstate]').length > 0){
+            jsdng = true; //is a Javascript Display and Grading problem
+            submit_button.attr('no-click','true');
+        }
         submit_button.click(query_await);
 
         function query_await() {
             //TODO: improve this code
             var refreshIntervalId = setInterval(function() {
-                let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]').find('span:first').text();
-                if (new_submit_button_text == submit_button_text) {
-                    clearInterval(refreshIntervalId);
-                    set_visibility(scroll = true);
-                    submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
-                    submit_button.click(query_await);
-                };
+                if(jsdng){
+                    let new_no_click = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]').attr('no-click');
+                    if (new_no_click != 'true') {
+                        clearInterval(refreshIntervalId);
+                        set_visibility(scroll = true);
+                        submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
+                        submit_button.attr('no-click','true');
+                        submit_button.click(query_await);
+                    };
+                }
+                else{
+                    let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]').find('span:first').text();
+                    if (new_submit_button_text == submit_button_text) {
+                        clearInterval(refreshIntervalId);
+                        set_visibility(scroll = true);
+                        submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component + '"]');
+                        submit_button.click(query_await);
+                    };
+                }
             }, 500);
         }
 
