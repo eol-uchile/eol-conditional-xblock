@@ -100,7 +100,7 @@ class EolConditionalXBlock(XBlock):
         return template.render(Context(context))
 
     def get_conditional_component_list(self):
-        conditional_component_list = re.split('\s*,*|\s*,\s*', self.conditional_component)
+        conditional_component_list = re.split('; |, |\*|\n', self.conditional_component)
         return list(filter(None, conditional_component_list)) # filter empty elements
     
     @XBlock.json_handler
