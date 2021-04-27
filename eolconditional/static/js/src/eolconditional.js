@@ -54,8 +54,7 @@ function EolConditionalXBlock(runtime, element, settings) {
                 );
 
                 for (const [index, conditional_component] of settings.conditional_component_list.entries()) {
-                    conditional_component = conditional_component.trim();
-                    let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
+                    let c = $('.vert').filter('[data-id*="' + conditional_component.trim() + '"]');
                     c.show();
                     // Scroll page to the first conditional_component on submit
                     if (index == 0 && scroll) {
@@ -64,8 +63,7 @@ function EolConditionalXBlock(runtime, element, settings) {
                 }
             } else {
                 for (conditional_component of settings.conditional_component_list) {
-                    conditional_component = conditional_component.trim();
-                    let c = $('.vert').filter('[data-id*="' + conditional_component + '"]');
+                    let c = $('.vert').filter('[data-id*="' + conditional_component.trim() + '"]');
                     c.hide();
                 }
             }
@@ -73,21 +71,18 @@ function EolConditionalXBlock(runtime, element, settings) {
 
         // Set visible if submit button is disabled or answer is correct
         function is_visible(component) {
-            component = component.trim();
             return check_disabled(component) || check_status(component);
         }
 
         // Check if submit button is disabled (finished attempting the problem) and if the problem has been answered
         function check_disabled(component) {
-            component = component.trim();
-            return $('.submit').filter('[aria-describedby*="' + component + '"]').is(":disabled") && !$('.status').filter('[id*="status_' + component + '"]').hasClass('unanswered');
+            return $('.submit').filter('[aria-describedby*="' + component.trim() + '"]').is(":disabled") && !$('.status').filter('[id*="status_' + component.trim() + '"]').hasClass('unanswered');
         }
 
         // Check if answer is correct
         function check_status(component) {
-            component = component.trim();
             let is_correct = true;
-            let elements = $('.status').filter('[id*="status_' + component + '"]');
+            let elements = $('.status').filter('[id*="status_' + component.trim() + '"]');
             // Sometimes are more than one status element
             for (let i = 0; i < elements.length; i++) {
                 element = elements.eq(i);
