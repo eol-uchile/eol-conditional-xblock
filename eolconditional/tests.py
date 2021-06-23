@@ -7,11 +7,11 @@ import logging
 # Installed packages (via pip)
 from django.test import Client
 from mock import patch, Mock
-from util.testing import UrlResetMixin
 
 # Edx dependencies
-from student.roles import CourseStaffRole
-from student.tests.factories import UserFactory, CourseEnrollmentFactory
+from common.djangoapps.student.roles import CourseStaffRole
+from common.djangoapps.student.tests.factories import UserFactory, CourseEnrollmentFactory
+from common.djangoapps.util.testing import UrlResetMixin
 from xblock.field_data import DictFieldData
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
@@ -67,7 +67,7 @@ class TestEolConditionalXBlock(UrlResetMixin, ModuleStoreTestCase):
         self.xblock = self.make_an_xblock()
         # Patch the comment client user save method so it does not try
         # to create a new cc user when creating a django user
-        with patch('student.models.cc.User.save'):
+        with patch('common.djangoapps.student.models.cc.User.save'):
             uname = 'student'
             email = 'student@edx.org'
             password = 'test'
