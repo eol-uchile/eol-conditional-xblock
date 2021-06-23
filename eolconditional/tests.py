@@ -5,13 +5,13 @@ from mock import patch, Mock
 
 from django.test import TestCase, Client
 
-from util.testing import UrlResetMixin
+from common.djangoapps.util.testing import UrlResetMixin
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 
 from xmodule.modulestore.tests.factories import CourseFactory
-from student.tests.factories import UserFactory, CourseEnrollmentFactory
+from common.djangoapps.student.tests.factories import UserFactory, CourseEnrollmentFactory
 from xblock.field_data import DictFieldData
-from student.roles import CourseStaffRole
+from common.djangoapps.student.roles import CourseStaffRole
 
 from .eolconditional import EolConditionalXBlock
 
@@ -67,7 +67,7 @@ class TestEolConditionalXBlock(UrlResetMixin, ModuleStoreTestCase):
         self.xblock = self.make_an_xblock()
         # Patch the comment client user save method so it does not try
         # to create a new cc user when creating a django user
-        with patch('student.models.cc.User.save'):
+        with patch('common.djangoapps.student.models.cc.User.save'):
             uname = 'student'
             email = 'student@edx.org'
             password = 'test'
