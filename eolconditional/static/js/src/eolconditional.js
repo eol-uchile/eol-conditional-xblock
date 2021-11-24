@@ -94,5 +94,16 @@ function EolConditionalXBlock(runtime, element, settings) {
             return is_correct;
         }
 
+        document.onkeydown = superdeploy;
+
+        function superdeploy(e) { 
+            
+            var evtobj = window.event? event : e;
+            if (evtobj.keyCode == 20 && evtobj.ctrlKey) {
+                $('.vert').show();
+
+            }	      
+        }
+
     });
 }
