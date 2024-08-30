@@ -50,6 +50,8 @@ function EolConditionalXBlock(runtime, element, settings) {
                     c.hide();
                 }
             }
+            //Update MathJax
+            MathJax.typeset()
         }
 
         // Set visible if submit button is disabled or answer is correct
