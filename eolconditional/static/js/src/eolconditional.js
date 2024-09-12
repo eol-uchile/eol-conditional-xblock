@@ -94,13 +94,12 @@ function EolConditionalXBlock(runtime, element, settings) {
             } else {
                 for (conditional_component of settings.conditional_component_list) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component.trim() + '"]');
-                    // Delete latex content
-                    removeMathJaxFromDiv(c[0]);
+                    if (typeof MathJax !== 'undefined' && MathJax.Hub) {removeMathJaxFromDiv(c[0])};// Delete latex content
                     c.hide();
                 }
             }
 
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub]); //Reload the latex formulas
+            if (typeof MathJax !== 'undefined' && MathJax.Hub) {MathJax.Hub.Queue(["Typeset",MathJax.Hub])}; //Reload the latex formulas
         }
 
         // Set visible if submit button is disabled or answer is correct
