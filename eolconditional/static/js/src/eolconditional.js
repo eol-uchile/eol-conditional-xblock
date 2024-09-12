@@ -39,6 +39,35 @@ function EolConditionalXBlock(runtime, element, settings) {
             }, 500);
         }
 
+        function removeMathJaxFromDiv(div) {
+            //Obtain all latex elelemnts of a specific div
+            //console.log("Limpiar MathJax");
+            var jax = MathJax.Hub.getAllJax(div);
+        
+            for (var i = 0, m = jax.length; i < m; i++) {
+                var tex = jax[i].originalText;
+                var isDisplay = (jax[i].root.Get("display") === "block");
+        
+                // check if use () or []
+                if (isDisplay) {
+                    tex = "\\[" + tex + "\\]";
+                } else {
+                    tex = "\\(" + tex + "\\)";
+                }
+        
+                var script = jax[i].SourceElement(); // <script> elemtant that contain mathjax code
+                jax[i].Remove(); // Remove mathjax
+        
+                var preview = script.previousSibling; // preview
+                if (preview && preview.className === "MathJax_Preview") {
+                    preview.parentNode.removeChild(preview); // Delete preview
+                }
+        
+                script.parentNode.insertBefore(document.createTextNode(tex), script); // insert original text
+                script.parentNode.removeChild(script); // remove original script
+            }
+        }
+
         function set_visibility(scroll = false) {
             if (is_visible(settings.trigger_component.trim())) {
                 $.ajax({
@@ -56,6 +85,7 @@ function EolConditionalXBlock(runtime, element, settings) {
                 for (const [index, conditional_component] of settings.conditional_component_list.entries()) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component.trim() + '"]');
                     c.show();
+
                     // Scroll page to the first conditional_component on submit
                     if (index == 0 && scroll) {
                         $("html, body").animate({ scrollTop: c.offset().top }, 1000);
@@ -64,9 +94,13 @@ function EolConditionalXBlock(runtime, element, settings) {
             } else {
                 for (conditional_component of settings.conditional_component_list) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component.trim() + '"]');
+                    // Delete latex content
+                    removeMathJaxFromDiv(c[0]);
                     c.hide();
                 }
             }
+
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub]); //Reload the latex formulas
         }
 
         // Set visible if submit button is disabled or answer is correct
