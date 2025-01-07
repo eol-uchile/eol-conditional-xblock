@@ -1,38 +1,50 @@
 function EolConditionalXBlock(runtime, element, settings) {
 
+    let triggers = (settings.trigger_component.trim()).split("_")
+    var sbtbtn = {
+        "jsdng" : false,
+        "element" : null,
+        "done": false
+    }
+    let submit_buttons = []
 
     $(function($) {
         var handlerUrl = runtime.handlerUrl(element, 'publish_completion');
         $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
         set_visibility();
-        var submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component.trim() + '"]');
+
+        //var submit_buttons = 
+        var submit_button = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]');
         var submit_button_text = submit_button.find('span:first').text(); // getting 'original state' of submit button
         var jsdng = false;
-        if($('.vert').filter('[data-id*="' + settings.trigger_component.trim() + '"]').find('.jsinput[data-getstate]').length > 0){
+        if($('.vert').filter('[data-id*="' + triggers[0].trim() + '"]').find('.jsinput[data-getstate]').length > 0){
             jsdng = true; //is a Javascript Display and Grading problem
             submit_button.attr('no-click','true');
         }
         submit_button.click(query_await);
 
         function query_await() {
+            console.log("Pressed submit");
             //TODO: improve this code
             var refreshIntervalId = setInterval(function() {
                 if(jsdng){
-                    let new_no_click = $('.submit').filter('[aria-describedby*="' + settings.trigger_component.trim() + '"]').attr('no-click');
+                    console.log("es Javascript Display and Grading problem")
+                    let new_no_click = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]').attr('no-click');
                     if (new_no_click != 'true') {
                         clearInterval(refreshIntervalId);
                         set_visibility(scroll = true);
-                        submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component.trim() + '"]');
+                        submit_button = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]');
                         submit_button.attr('no-click','true');
                         submit_button.click(query_await);
                     };
                 }
                 else{
-                    let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + settings.trigger_component.trim() + '"]').find('span:first').text();
+                    console.log("NO es Javascript Display and Grading problem")
+                    let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]').find('span:first').text();
                     if (new_submit_button_text == submit_button_text) {
                         clearInterval(refreshIntervalId);
                         set_visibility(scroll = true);
-                        submit_button = $('.submit').filter('[aria-describedby*="' + settings.trigger_component.trim() + '"]');
+                        submit_button = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]');
                         submit_button.click(query_await);
                     };
                 }
@@ -40,7 +52,7 @@ function EolConditionalXBlock(runtime, element, settings) {
         }
 
         function set_visibility(scroll = false) {
-            if (is_visible(settings.trigger_component.trim())) {
+            if (is_visible(triggers[0].trim())) {
                 $.ajax({
                     type: "POST",
                     url: handlerUrl,
