@@ -7,7 +7,13 @@ function EolConditionalXBlock(runtime, element, settings) {
         var handlerUrl = runtime.handlerUrl(element, 'publish_completion');
         $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
 
-        set_visibility();
+        console.log("Primera revisión");
+        if (check_buttons())
+        {
+            if(check_buttons){ set_visibility(action = "reveal",scroll = false) };
+        }else{
+            if(check_buttons){ set_visibility(action = "hide",scroll = false) };
+        }
 
 
         triggers.forEach(trigger => {
@@ -33,51 +39,68 @@ function EolConditionalXBlock(runtime, element, settings) {
         });
 
         function query_await(triggercode) {
-            if (submit_buttons[triggercode]["done"]) {
-                console.log(`Trigger ${triggercode} ya completado, no se ejecuta de nuevo.`);
-                return; // Si ya está completado, no hacemos nada
-            }
-        
-            var refreshIntervalId = setInterval(function () {
-                if (submit_buttons[triggercode]["jsdng"]) {
-                    // Es un problema de Javascript Display and Grading
+            //TODO: improve this code
+            console.log("Query await")
+            var refreshIntervalId = setInterval(function() {
+                if(submit_buttons[triggercode]["jsdng"]){
                     let new_no_click = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]').attr('no-click');
-                    if (new_no_click !== 'true') {
-                        console.log(`Trigger ${triggercode} completado (JS Grading).`);
-                        submit_buttons[triggercode]["done"] = true;
-                        clearInterval(refreshIntervalId);
-                        set_visibility(scroll = true);
-                    }
-                } else {
-                    // No es un problema de Javascript Display and Grading
+                    if (new_no_click != 'true') {
+                        if(check_buttons){ set_visibility(action = "reveal",scroll = true) };
+                        submit_buttons[triggercode]["element"] = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]');
+                        submit_buttons[triggercode]["element"] .attr('no-click','true');
+                        submit_buttons[triggercode]["element"].click(() => query_await(triggercode));
+                    };
+                }
+                else{
                     let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]').find('span:first').text();
-                    if (new_submit_button_text === submit_buttons[triggercode]["text"]) {
-                        console.log(`Trigger ${triggercode} completado.`);
-                        submit_buttons[triggercode]["done"] = true;
+                    if (new_submit_button_text == submit_buttons[triggercode]["text"] ) {
                         clearInterval(refreshIntervalId);
-                        set_visibility(scroll = true);
-                    }
+                        if(check_buttons){ set_visibility(action = "reveal",scroll = true) };
+                        submit_buttons[triggercode]["element"] = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]');
+                        submit_buttons[triggercode]["element"].click(() => query_await(triggercode));
+                    };
                 }
             }, 500);
         }
+
+        function check_buttons()
+        {
+            console.log("check buttons");
+            let allbuttonsready = true
+
+            triggers.forEach(trigger => {
+
+                console.log(is_visible(trigger.trim()) );
+
+                if ( is_visible(trigger.trim()) )
+                {
+                        $.ajax({
+                            type: "POST",
+                            url: handlerUrl,
+                            data: JSON.stringify({
+                                completion: 1.0,
+                            }),
+                        }).then(
+                            (response) => {
+                                //console.log("Respuesta...");
+                                //console.log(response);
+                            },
+                        );
+    
+                }else
+                {
+                    allbuttonsready = false
+                }
+            
+            });
+            return allbuttonsready;
+        }
+
         
 
-        function set_visibility(scroll = false) {
+        function set_visibility(action = "hide",scroll = false) {
             //console.log("Set visibility...")
-            if (is_visible(triggers[0].trim())) {
-                $.ajax({
-                    type: "POST",
-                    url: handlerUrl,
-                    data: JSON.stringify({
-                        completion: 1.0,
-                    }),
-                }).then(
-                    (response) => {
-                        //console.log("Respuesta...");
-                        //console.log(response);
-                    },
-                );
-
+            if (action == "reveal"){
                 for (const [index, conditional_component] of settings.conditional_component_list.entries()) {
                     let c = $('.vert').filter('[data-id*="' + conditional_component.trim() + '"]');
                     c.show();
