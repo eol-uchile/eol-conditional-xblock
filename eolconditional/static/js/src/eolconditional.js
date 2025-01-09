@@ -45,7 +45,7 @@ function EolConditionalXBlock(runtime, element, settings) {
                 if(submit_buttons[triggercode]["jsdng"]){
                     let new_no_click = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]').attr('no-click');
                     if (new_no_click != 'true') {
-                        if(check_buttons){ set_visibility(action = "reveal",scroll = true) };
+                        if(check_buttons()){ set_visibility(action = "reveal",scroll = true) };
                         submit_buttons[triggercode]["element"] = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]');
                         submit_buttons[triggercode]["element"] .attr('no-click','true');
                         submit_buttons[triggercode]["element"].click(() => query_await(triggercode));
@@ -55,7 +55,7 @@ function EolConditionalXBlock(runtime, element, settings) {
                     let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]').find('span:first').text();
                     if (new_submit_button_text == submit_buttons[triggercode]["text"] ) {
                         clearInterval(refreshIntervalId);
-                        if(check_buttons){ set_visibility(action = "reveal",scroll = true) };
+                        if(check_buttons()){ set_visibility(action = "reveal",scroll = true) };
                         submit_buttons[triggercode]["element"] = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]');
                         submit_buttons[triggercode]["element"].click(() => query_await(triggercode));
                     };
@@ -65,30 +65,32 @@ function EolConditionalXBlock(runtime, element, settings) {
 
         function check_buttons()
         {
-            console.log("check buttons");
+            //console.log("check buttons");
             let allbuttonsready = true
 
             triggers.forEach(trigger => {
 
-                console.log(is_visible(trigger.trim()) );
+                //console.log(is_visible(trigger.trim()) );
 
                 if ( is_visible(trigger.trim()) )
                 {
-                        $.ajax({
-                            type: "POST",
-                            url: handlerUrl,
-                            data: JSON.stringify({
-                                completion: 1.0,
-                            }),
-                        }).then(
-                            (response) => {
-                                //console.log("Respuesta...");
-                                //console.log(response);
-                            },
-                        );
-    
+                    //console.log("not visible");
+                    $.ajax({
+                        type: "POST",
+                        url: handlerUrl,
+                        data: JSON.stringify({
+                            completion: 1.0,
+                        }),
+                    }).then(
+                        (response) => {
+                            //console.log("Respuesta...");
+                            //console.log(response);
+                        },
+                    );
+
                 }else
                 {
+                    //console.log("visible");
                     allbuttonsready = false
                 }
             
