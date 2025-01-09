@@ -1,57 +1,69 @@
 function EolConditionalXBlock(runtime, element, settings) {
 
     let triggers = (settings.trigger_component.trim()).split("_")
-    var sbtbtn = {
-        "jsdng" : false,
-        "element" : null,
-        "done": false
-    }
-    let submit_buttons = []
+    let submit_buttons = {}
 
     $(function($) {
         var handlerUrl = runtime.handlerUrl(element, 'publish_completion');
         $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
+
         set_visibility();
 
-        //var submit_buttons = 
-        var submit_button = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]');
-        var submit_button_text = submit_button.find('span:first').text(); // getting 'original state' of submit button
-        var jsdng = false;
-        if($('.vert').filter('[data-id*="' + triggers[0].trim() + '"]').find('.jsinput[data-getstate]').length > 0){
-            jsdng = true; //is a Javascript Display and Grading problem
-            submit_button.attr('no-click','true');
-        }
-        submit_button.click(query_await);
 
-        function query_await() {
-            console.log("Pressed submit");
-            //TODO: improve this code
-            var refreshIntervalId = setInterval(function() {
-                if(jsdng){
-                    console.log("es Javascript Display and Grading problem")
-                    let new_no_click = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]').attr('no-click');
-                    if (new_no_click != 'true') {
+        triggers.forEach(trigger => {
+
+            let subbtn = {
+                "jsdng" : false,
+                "element" : null,
+                "text": "",
+                "done": false
+            }
+
+            subbtn["element"] = $('.submit').filter('[aria-describedby*="' + trigger.trim() + '"]');
+            subbtn["text"] = subbtn["element"].find('span:first').text();// getting 'original state' of submit button
+            
+            if($('.vert').filter('[data-id*="' + trigger.trim() + '"]').find('.jsinput[data-getstate]').length > 0){
+                subbtn["jsdng"] = true; //is a Javascript Display and Grading problem
+                subbtn["element"].attr('no-click','true');
+            }
+
+            subbtn["element"].click(() => query_await(trigger));
+
+            submit_buttons[trigger] = subbtn
+        });
+
+        function query_await(triggercode) {
+            if (submit_buttons[triggercode]["done"]) {
+                console.log(`Trigger ${triggercode} ya completado, no se ejecuta de nuevo.`);
+                return; // Si ya está completado, no hacemos nada
+            }
+        
+            var refreshIntervalId = setInterval(function () {
+                if (submit_buttons[triggercode]["jsdng"]) {
+                    // Es un problema de Javascript Display and Grading
+                    let new_no_click = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]').attr('no-click');
+                    if (new_no_click !== 'true') {
+                        console.log(`Trigger ${triggercode} completado (JS Grading).`);
+                        submit_buttons[triggercode]["done"] = true;
                         clearInterval(refreshIntervalId);
                         set_visibility(scroll = true);
-                        submit_button = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]');
-                        submit_button.attr('no-click','true');
-                        submit_button.click(query_await);
-                    };
-                }
-                else{
-                    console.log("NO es Javascript Display and Grading problem")
-                    let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]').find('span:first').text();
-                    if (new_submit_button_text == submit_button_text) {
+                    }
+                } else {
+                    // No es un problema de Javascript Display and Grading
+                    let new_submit_button_text = $('.submit').filter('[aria-describedby*="' + triggercode.trim() + '"]').find('span:first').text();
+                    if (new_submit_button_text === submit_buttons[triggercode]["text"]) {
+                        console.log(`Trigger ${triggercode} completado.`);
+                        submit_buttons[triggercode]["done"] = true;
                         clearInterval(refreshIntervalId);
                         set_visibility(scroll = true);
-                        submit_button = $('.submit').filter('[aria-describedby*="' + triggers[0].trim() + '"]');
-                        submit_button.click(query_await);
-                    };
+                    }
                 }
             }, 500);
         }
+        
 
         function set_visibility(scroll = false) {
+            //console.log("Set visibility...")
             if (is_visible(triggers[0].trim())) {
                 $.ajax({
                     type: "POST",
@@ -61,6 +73,7 @@ function EolConditionalXBlock(runtime, element, settings) {
                     }),
                 }).then(
                     (response) => {
+                        //console.log("Respuesta...");
                         //console.log(response);
                     },
                 );
