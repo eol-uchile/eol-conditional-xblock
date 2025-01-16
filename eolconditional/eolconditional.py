@@ -31,7 +31,7 @@ class EolConditionalXBlock(XBlock):
 
     trigger_component = String(
         display_name = _("ID Componente Gatillante"),
-        help = _("Indica el ID del componente (problema) gatillante. Recuerda que para el ID son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
+        help = _("Indica el o los ID del o los componentes (problemas) gatillantes. ingreselos separado por un guión bajo Recuerda que para el ID son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322 o tambien 4950f7e5541645aa920227e6dc0ea322_4950f7e5541645aa920227e6dc0ea322"),
         default = "None",
         scope = Scope.settings,
     )
