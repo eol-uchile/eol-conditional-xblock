@@ -1,14 +1,16 @@
-#!/bin/dash
+#!/bin/bash
 
-pip install -e /openedx/requirements/eolconditional
+set -x
 
-cd /openedx/requirements/eolconditional
+pip install -e /openedx/requirements/app
+
+cd /openedx/requirements/app
 cp /openedx/edx-platform/setup.cfg .
 mkdir test_root
 cd test_root/
 ln -s /openedx/staticfiles .
 
-cd /openedx/requirements/eolconditional
+cd /openedx/requirements/app
 
 DJANGO_SETTINGS_MODULE=lms.envs.test EDXAPP_TEST_MONGO_HOST=mongodb pytest eolconditional/tests.py
 
