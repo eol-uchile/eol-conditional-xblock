@@ -31,7 +31,7 @@ class EolConditionalXBlock(XBlock):
 
     trigger_component = String(
         display_name = _("ID Componente Gatillante"),
-        help = _("Indica el ID del componente (problema) gatillante. Recuerda que para el ID son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322"),
+        help = _("Indica el o los ID del o los componentes (problemas) gatillantes. ingreselos separado por un guión bajo Recuerda que para el ID son 32 caracteres alfanumericos, ejemplo: 4950f7e5541645aa920227e6dc0ea322 o tambien 4950f7e5541645aa920227e6dc0ea322_4950f7e5541645aa920227e6dc0ea322"),
         default = "None",
         scope = Scope.settings,
     )
@@ -84,7 +84,7 @@ class EolConditionalXBlock(XBlock):
     def studio_submit(self, request, suffix=''):
         self.trigger_component = request.params['trigger_component']
         self.conditional_component = request.params['conditional_component']
-        return Response(json.dumps({'result': 'success'}), content_type='application/json')
+        return Response({'result': 'success'}, content_type='application/json')
 
     def get_context(self):
         return {
@@ -99,9 +99,9 @@ class EolConditionalXBlock(XBlock):
         template = Template(template_str)
         return template.render(Context(context))
 
-    def get_conditional_component_list(self):    
-        conditional_component_list = re.split('\s*,*|\s*,\s*', self.conditional_component)
-        return filter(None, conditional_component_list) # filter empty elements
+    def get_conditional_component_list(self):
+        conditional_component_list = re.split('; |, |\*|\n', self.conditional_component)
+        return list(filter(None, conditional_component_list)) # filter empty elements
     
     @XBlock.json_handler
     def publish_completion(self, data, dispatch):  # pylint: disable=unused-argument
