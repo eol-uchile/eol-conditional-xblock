@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 
+# Python Standard Libraries
+import json
+import logging
+
+# Installed packages (via pip)
+from django.test import Client
 from mock import patch, Mock
-
-
-from django.test import TestCase, Client
-
 from util.testing import UrlResetMixin
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 
-from xmodule.modulestore.tests.factories import CourseFactory
+# Edx dependencies
+from student.roles import CourseStaffRole
 from student.tests.factories import UserFactory, CourseEnrollmentFactory
 from xblock.field_data import DictFieldData
-from student.roles import CourseStaffRole
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from xmodule.modulestore.tests.factories import CourseFactory
 
+# Internal project dependencies
 from .eolconditional import EolConditionalXBlock
 
-from six import text_type
-import json
-
-import logging
 logger = logging.getLogger(__name__)
 
 XBLOCK_RUNTIME_USER_ID = 99

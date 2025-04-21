@@ -1,15 +1,16 @@
-import json
+# Python Standard Libraries
 import re
+
+# Installed packages (via pip)
+from django.template import Context, Template
+from webob import Response
 import pkg_resources
 
-from django.template import Context, Template
-
-from webob import Response
-
+# Edx dependencies
 from xblock.core import XBlock
-from xblock.fields import Integer, String, Boolean, Scope
-from xblock.fragment import Fragment
 from xblock.exceptions import JsonHandlerError
+from xblock.fields import String, Scope
+from xblock.fragment import Fragment
 
 # Make '_' a no-op so we can scrape strings
 _ = lambda text: text
