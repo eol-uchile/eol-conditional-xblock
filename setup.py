@@ -1,11 +1,7 @@
 """Setup for eolconditional XBlock."""
-
-
-
 import os
 
 from setuptools import setup
-
 
 def package_data(pkg, roots):
     """Generic function to find package_data.
@@ -25,7 +21,9 @@ def package_data(pkg, roots):
 
 setup(
     name='eolconditional-xblock',
-    version='0.1',
+    version='1.0.0',
+    author="Oficina EOL UChile",
+    author_email="eol-ing@uchile.cl",
     description='Conditional XBlock with trigger and conditional components',
     license='AGPL v3',
     packages=[

@@ -11,6 +11,7 @@ on:
       - synchronize
     branches:
       - 'master'
+      - 'lilac'
     paths-ignore:
       - '.github/workflows/**'
 
