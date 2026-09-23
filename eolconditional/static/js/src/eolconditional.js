@@ -4,7 +4,6 @@ function EolConditionalXBlock(runtime, element, settings) {
     let submit_buttons = {}
 
     $(function($) {
-        var handlerUrl = runtime.handlerUrl(element, 'publish_completion');
         $('.vert').filter('[data-id*="' + settings.location + '"]').hide(); // Hide eolconditional Xblock
 
         console.log("Primera revisión");
@@ -75,19 +74,6 @@ function EolConditionalXBlock(runtime, element, settings) {
                 if ( is_visible(trigger.trim()) )
                 {
                     //console.log("not visible");
-                    $.ajax({
-                        type: "POST",
-                        url: handlerUrl,
-                        data: JSON.stringify({
-                            completion: 1.0,
-                        }),
-                    }).then(
-                        (response) => {
-                            //console.log("Respuesta...");
-                            //console.log(response);
-                        },
-                    );
-
                 }else
                 {
                     //console.log("visible");

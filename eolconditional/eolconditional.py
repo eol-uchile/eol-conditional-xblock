@@ -8,7 +8,6 @@ import pkg_resources
 
 # Edx dependencies
 from xblock.core import XBlock
-from xblock.exceptions import JsonHandlerError
 from xblock.fields import String, Scope
 from xblock.fragment import Fragment
 
@@ -103,32 +102,6 @@ class EolConditionalXBlock(XBlock):
     def get_conditional_component_list(self):
         conditional_component_list = re.split(r';|\n|\s|\*|,', self.conditional_component)
         return list(filter(None, conditional_component_list)) # filter empty elements
-    
-    @XBlock.json_handler
-    def publish_completion(self, data, dispatch):  # pylint: disable=unused-argument
-        """
-        Entry point for completion for student_view.
-        Parameters:
-            data: JSON dict:
-                key: "completion"
-                value: float in range [0.0, 1.0]
-            dispatch: Ignored.
-        Return value: JSON response (200 on success, 400 for malformed data)
-        """
-        completion_service = self.runtime.service(self, 'completion')
-        if completion_service is None:
-            raise JsonHandlerError(500, u"No completion service found")
-        elif not completion_service.completion_tracking_enabled():
-            raise JsonHandlerError(404, u"Completion tracking is not enabled and API calls are unexpected")
-        if not isinstance(data['completion'], (int, float)):
-            message = u"Invalid completion value {}. Must be a float in range [0.0, 1.0]"
-            raise JsonHandlerError(400, message.format(data['completion']))
-        elif not 0.0 <= data['completion'] <= 1.0:
-            message = u"Invalid completion value {}. Must be in range [0.0, 1.0]"
-            raise JsonHandlerError(400, message.format(data['completion']))
-        self.runtime.publish(self, "completion", data)
-        return {"result": "ok"}
-
 
 
     @staticmethod
