@@ -7,6 +7,7 @@ from webob import Response
 import pkg_resources
 
 # Edx dependencies
+from xblock.completable import XBlockCompletionMode
 from xblock.core import XBlock
 from xblock.fields import String, Scope
 from xblock.fragment import Fragment
@@ -44,6 +45,9 @@ class EolConditionalXBlock(XBlock):
     )
 
     has_author_view = True
+    has_score = False
+    has_custom_completion = False
+    completion_mode = XBlockCompletionMode.EXCLUDED
 
     def resource_string(self, path):
         """Handy helper for getting resources from our kit."""

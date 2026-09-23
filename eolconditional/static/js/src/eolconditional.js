@@ -71,12 +71,8 @@ function EolConditionalXBlock(runtime, element, settings) {
 
                 //console.log(is_visible(trigger.trim()) );
 
-                if ( is_visible(trigger.trim()) )
+                if ( !is_visible(trigger.trim()) )
                 {
-                    //console.log("not visible");
-                }else
-                {
-                    //console.log("visible");
                     allbuttonsready = false
                 }
             

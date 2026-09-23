@@ -12,6 +12,7 @@ from mock import patch, Mock
 from common.djangoapps.student.roles import CourseStaffRole
 from common.djangoapps.student.tests.factories import UserFactory, CourseEnrollmentFactory
 from common.djangoapps.util.testing import UrlResetMixin
+from xblock.completable import XBlockCompletionMode
 from xblock.field_data import DictFieldData
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
@@ -118,6 +119,14 @@ class TestEolConditionalXBlock(UrlResetMixin, ModuleStoreTestCase):
         self.assertEqual(self.xblock.trigger_component, 'None')
         self.assertEqual(self.xblock.conditional_component, 'None')
         self.assertEqual(isinstance(self.xblock.get_conditional_component_list(), list), True)
+
+    def test_completion_excluded(self):
+        """
+            Check that the xblock is excluded from completion and grading
+        """
+        self.assertEqual(self.xblock.completion_mode, XBlockCompletionMode.EXCLUDED)
+        self.assertFalse(self.xblock.has_custom_completion)
+        self.assertFalse(self.xblock.has_score)
 
     def test_student_view(self):
         """

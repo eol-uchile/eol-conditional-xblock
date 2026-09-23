@@ -7,12 +7,6 @@
 
 XBlock to show/hide one or more conditional component by a trigger component in the Open edX LMS. Editable within Open edx Studio.
 
-## Configurations
-
-LMS Django Admin:
-- */admin/waffle/switch/*
-    - Add Switch and set Enable: **completion.enable_completion_tracking**
-
 ## TESTS
 **Prepare tests:**
 
